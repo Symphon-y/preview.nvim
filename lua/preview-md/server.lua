@@ -21,6 +21,17 @@ local function find_python()
       return cmd
     end
   end
+  -- vim.fn.executable uses a Win32 API that can miss PATH entries the shell
+  -- resolves fine (e.g. pyenv-win, conda, user-scoped installs). Fall back
+  -- to a shell probe so we match what :terminal sees.
+  if vim.fn.has("win32") == 1 then
+    for _, cmd in ipairs({ "python3", "python", "py" }) do
+      local out = vim.fn.system(cmd .. " --version 2>&1")
+      if vim.v.shell_error == 0 and out:match("Python 3") then
+        return cmd
+      end
+    end
+  end
 end
 
 -- URL-encode a string for use in a query parameter.
