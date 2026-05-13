@@ -20,23 +20,22 @@ local function find_python()
     if vim.fn.executable(cmd) == 1 then
       return cmd
     end
-    local full = vim.fn.exepath(cmd)
-    if full ~= "" then
-      return full
-    end
   end
-  -- vim.fn.executable uses a Win32 API that can miss PATH entries the shell
-  -- resolves fine (e.g. pyenv-win, conda, user-scoped installs). Fall back
-  -- to a shell probe so we match what :terminal sees.
   if vim.fn.has("win32") == 1 then
+    -- vim.fn.executable uses SearchPathW which misses pyenv-win, conda, and
+    -- user-scoped installs. PowerShell's Get-Command resolves PATH the same
+    -- way the terminal does. Pass args as a list to bypass cmd.exe entirely.
+    local shell = vim.fn.executable("pwsh") == 1 and "pwsh" or "powershell"
     for _, cmd in ipairs({ "python3", "python", "py" }) do
-      local out = vim.fn.system(cmd .. " --version 2>&1")
-      if vim.v.shell_error == 0 and out:match("Python 3") then
-        local full = vim.fn.trim(vim.fn.system("where " .. cmd .. " 2>nul"))
-        if vim.v.shell_error == 0 and full ~= "" then
-          return vim.fn.split(full, "\n")[1]
+      local path = vim.fn.trim(vim.fn.system({
+        shell, "-NoProfile", "-NonInteractive", "-Command",
+        "(Get-Command " .. cmd .. " -ErrorAction SilentlyContinue).Source",
+      }))
+      if path ~= "" and path:lower():match("%.exe$") then
+        local ver = vim.fn.system({ path, "--version" })
+        if ver:match("Python 3") then
+          return path
         end
-        return cmd
       end
     end
   end
