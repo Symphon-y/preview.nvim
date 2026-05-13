@@ -17,8 +17,12 @@ end
 
 local function find_python()
   for _, cmd in ipairs({ "python3", "python", "py" }) do
-    if vim.fn.executable(cmd) == 1 or vim.fn.exepath(cmd) ~= "" then
+    if vim.fn.executable(cmd) == 1 then
       return cmd
+    end
+    local full = vim.fn.exepath(cmd)
+    if full ~= "" then
+      return full
     end
   end
   -- vim.fn.executable uses a Win32 API that can miss PATH entries the shell
@@ -28,6 +32,10 @@ local function find_python()
     for _, cmd in ipairs({ "python3", "python", "py" }) do
       local out = vim.fn.system(cmd .. " --version 2>&1")
       if vim.v.shell_error == 0 and out:match("Python 3") then
+        local full = vim.fn.trim(vim.fn.system("where " .. cmd .. " 2>nul"))
+        if vim.v.shell_error == 0 and full ~= "" then
+          return vim.fn.split(full, "\n")[1]
+        end
         return cmd
       end
     end
@@ -87,7 +95,8 @@ function M.watch(filepath, on_ready)
   local port_received = false
 
   -- "py" is the Windows Python Launcher; pass -3 to force Python 3.
-  local argv = python == "py"
+  local is_py_launcher = python == "py" or python:lower():match("[/\\]py%.exe$") ~= nil
+  local argv = is_py_launcher
     and { python, "-3", script, "--file", filepath, "--port", "0" }
     or { python, script, "--file", filepath, "--port", "0" }
 
