@@ -31,7 +31,7 @@ local function find_python()
         shell, "-NoProfile", "-NonInteractive", "-Command",
         "(Get-Command " .. cmd .. " -ErrorAction SilentlyContinue).Source",
       }))
-      if path ~= "" and path:lower():match("%.exe$") then
+      if path ~= "" and path:lower():match("%.exe$") and not path:lower():match("windowsapps") then
         local ver = vim.fn.system({ path, "--version" })
         if ver:match("Python 3") then
           return path

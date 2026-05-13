@@ -5,7 +5,7 @@ import argparse
 import os
 import threading
 import time
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -178,7 +178,7 @@ def main():
 
     _set_file(args.file)
 
-    srv = HTTPServer(("127.0.0.1", args.port), Handler)
+    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     port = srv.server_address[1]
     print(port, flush=True)  # Lua reads this to know the port
 
