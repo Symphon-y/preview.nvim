@@ -32,7 +32,7 @@ end
 function M.setup(opts)
   opts = opts or {}
 
-  vim.api.nvim_create_user_command("Preview", function(args)
+  vim.api.nvim_create_user_command("PreviewStart", function(args)
     M.preview(args.args ~= "" and args.args or nil)
   end, {
     nargs = "?",

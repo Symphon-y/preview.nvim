@@ -4,11 +4,11 @@ A Neovim plugin that opens a live browser preview of markdown and HTML files. Ed
 
 ## Features
 
-- `:Preview` — open the current buffer in your default browser
+- `:PreviewStart` — open the current buffer in your default browser
 - Live reload on every file save (SSE, ~250 ms latency)
 - GitHub Dark–styled markdown rendering (via [marked.js](https://marked.js.org) + [github-markdown-css](https://github.com/sindresorhus/github-markdown-css))
 - HTML file preview with the same live-reload behaviour
-- Switch files without restarting the server — `:Preview other.md` hot-swaps the watched file
+- Switch files without restarting the server — `:PreviewStart other.md` hot-swaps the watched file
 - Zero Python dependencies — server uses stdlib only
 - Cross-platform: Windows, macOS, Linux
 
@@ -43,18 +43,18 @@ The plugin registers itself automatically via `plugin/preview-md.lua`. No explic
 
 | Command | Description |
 |---|---|
-| `:Preview` | Preview the current buffer |
-| `:Preview path/to/file.md` | Preview a specific file |
+| `:PreviewStart` | Preview the current buffer |
+| `:PreviewStart path/to/file.md` | Preview a specific file |
 | `:PreviewStop` | Stop the preview server |
 
-Open a markdown file and run `:Preview`. A browser tab opens at `http://127.0.0.1:<port>`. The page updates automatically whenever you save the file.
+Open a markdown file and run `:PreviewStart`. A browser tab opens at `http://127.0.0.1:<port>`. The page updates automatically whenever you save the file.
 
 ## How it works
 
 ```
 Neovim                           Python (stdlib HTTP server)
 ──────                           ──────────────────────────
-:Preview  ──spawn──────────────► server.py --file <path> --port 0
+:PreviewStart  ──spawn──────────────► server.py --file <path> --port 0
           ◄── prints port ──────
           ── open browser ─────► http://127.0.0.1:<port>
 
