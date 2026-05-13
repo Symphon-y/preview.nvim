@@ -16,8 +16,8 @@ local function plugin_root()
 end
 
 local function find_python()
-  for _, cmd in ipairs({ "python3", "python" }) do
-    if vim.fn.executable(cmd) == 1 then
+  for _, cmd in ipairs({ "python3", "python", "py" }) do
+    if vim.fn.executable(cmd) == 1 or vim.fn.exepath(cmd) ~= "" then
       return cmd
     end
   end
@@ -75,8 +75,13 @@ function M.watch(filepath, on_ready)
   local script = plugin_root() .. "/server/server.py"
   local port_received = false
 
+  -- "py" is the Windows Python Launcher; pass -3 to force Python 3.
+  local argv = python == "py"
+    and { python, "-3", script, "--file", filepath, "--port", "0" }
+    or { python, script, "--file", filepath, "--port", "0" }
+
   state.job = vim.fn.jobstart(
-    { python, script, "--file", filepath, "--port", "0" },
+    argv,
     {
       on_stdout = function(_, data)
         if port_received then return end
