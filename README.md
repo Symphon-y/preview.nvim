@@ -2,6 +2,8 @@
 
 A Neovim plugin that opens a live browser preview of markdown and HTML files. Edits on disk are reflected instantly via Server-Sent Events — no manual refresh needed.
 
+<img src="assets/demo/demo.gif" />
+
 ## Features
 
 - `:PreviewStart` — open the current buffer in your default browser
