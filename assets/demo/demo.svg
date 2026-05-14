@@ -1,0 +1,16 @@
+<svg xmlns="http://w3.org" width="500" height="300">
+  <style>
+    @keyframes swap {
+      0%, 99% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .initial-gif { animation: swap 5s forwards; } /* Shows for 5s then hides */
+    .better-gif { opacity: 0; animation: swap 5s forwards reverse; } /* Starts hidden */
+  </style>
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://w3.org">
+      <img class="initial-gif" src="demo-small.gif" style="position:absolute"/>
+      <img class="better-gif" src="demo.gif" style="position:absolute" />
+    </div>
+  </foreignObject>
+</svg>
