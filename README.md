@@ -1,6 +1,7 @@
 # preview.nvim
 
 A Neovim plugin that opens a live browser preview of markdown and HTML files. Edits on disk are reflected instantly via Server-Sent Events
+
 <img src="assets/demo/demo.gif" />
 
 ## Features
